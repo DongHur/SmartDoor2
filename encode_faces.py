@@ -32,7 +32,7 @@ for (i, imagePath) in enumerate(imagePaths):
 	rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 	# recognize x, y coordinates for bounding boxes
-	boxes = face_recognition.face_locations(rgb, model=args["detection-method"])
+	boxes = face_recognition.face_locations(rgb, model=args["detection_method"])
 
 	# compute facial embedding for the face
 	encodings = face_recognition.face_encodings(rgb, boxes)
@@ -43,7 +43,7 @@ for (i, imagePath) in enumerate(imagePaths):
 		knownNames.append(name)
 
 # Store knownEncodings and KnownNames in Encoding Dataset
-print("[INFO] Storing Enfoding as Pickle ...")
+print("[INFO] Storing Encoding as Pickle ...")
 data = {"encodings": knownEncodings, "names": knownNames}
 f = open(args["encodings"], "wb")
 f.write(pickle.dumps(data))
