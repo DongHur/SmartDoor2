@@ -3,6 +3,7 @@ from imutils.video import FPS
 import face_recognition
 import argparse
 import pickle
+import imutils
 import time
 import cv2
 
@@ -13,13 +14,13 @@ ap.add_argument("-e", "--encodings", required=True, help="path to db for facial 
 args = vars(ap.parse_args())
 
 print("[INFO] loading encodings + face detector ...")
-data = pickle.loads(open([args["encodings"], "rb"]).read())
+data = pickle.loads(open(args["encodings"], "rb").read())
 detector = cv2.CascadeClassifier(args["cascade"])
 
 # start and warm up camera
 print("[INFO] starting video stream ...")
-# vs = VideoStream(src=0).start()
-vs = VideoStream(usePiCamera=True).start()
+vs = VideoStream(src=0).start()
+# vs = VideoStream(usePiCamera=True).start()
 time.sleep(2.0)
 
 # Frame Per Second Counter
