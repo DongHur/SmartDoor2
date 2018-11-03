@@ -73,7 +73,7 @@ while True:
 			name = max(counts, key=counts.get)
 			perc = 100.0*counts[name]/name_count[name]
 			if (perc > 80):
-				arduinoSerialData.write('Y')
+				arduinoSerialData.write(str.encode('Y'))
 		names.append(name + ": " + format(int(perc)) + "%" )
 
 	# AS LONG AS 80% IS MET THAN OPEN DOOR!
