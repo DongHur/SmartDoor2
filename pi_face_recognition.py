@@ -1,11 +1,17 @@
 from imutils.video import VideoStream
 from imutils.video import FPS
+from collections import Counter
 import face_recognition
 import argparse
 import pickle
 import imutils
 import time
 import cv2
+
+import serial
+
+# setup arduino
+arduinoSerialData = serial.Serial('/dev/ttyACM0', 9600)
 
 # Argument Parser
 ap = argparse.ArgumentParser()
@@ -25,6 +31,8 @@ time.sleep(2.0)
 
 # Frame Per Second Counter
 fps = FPS().start()
+
+name_count = Counter(data["names"])
 
 # Loop over frames from video file
 while True:
@@ -52,7 +60,6 @@ while True:
 		# match each face to the known face
 		matches = face_recognition.compare_faces(data["encodings"], encoding)
 		name = "Unknown"
-
 		# if match was found
 		if True in matches:
 			matchedIdxs = [i for (i,b) in enumerate(matches) if b]
@@ -61,11 +68,17 @@ while True:
 			for i in matchedIdxs:
 				name = data["names"][i]
 				counts[name] = counts.get(name, 0) + 1
-				
+			
 			# get the largest number of votes and return the largest number
 			name = max(counts, key=counts.get)
+			perc = 100.0*counts[name]/name_count[name]
+			if (perc > 80):
+				arduinoSerialData.write('Y')
+		names.append(name + ": " + format(int(perc)) + "%" )
 
-		names.append(name)
+	# AS LONG AS 80% IS MET THAN OPEN DOOR!
+
+	# **** don't need any of this part for real application****
 	# loop over the recognized faces
 	for ((top, right, bottom, left), name) in zip(boxes, names):
 		# draw the predicted face name on the image
